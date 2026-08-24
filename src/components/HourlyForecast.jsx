@@ -1,106 +1,85 @@
-import React, { useState } from 'react';
+import { useState } from 'react'
+import cloudyIcon from '../assets/images/icon-overcast.webp'
+import rainIcon from '../assets/images/icon-rain.webp'
+import sunnyIcon from '../assets/images/icon-sunny.webp'
 
 const mockHourlyData = {
-    Monday: [
-        { hour: '12:00 AM', status: 'Cloudy', temp: 27 },
-        { hour: '03:00 AM', status: 'Light Rain', temp: 26 },
-        { hour: '06:00 AM', status: 'Cloudy', temp: 27 },
-        { hour: '09:00 AM', status: 'Heavy Rain', temp: 29 },
-        { hour: '12:00 PM', status: 'Thunderstorm', temp: 31 },
-        { hour: '03:00 PM', status: 'Light Rain', temp: 30 },
-        { hour: '06:00 PM', status: 'Cloudy', temp: 28 },
-        { hour: '09:00 PM', status: 'Clear', temp: 27 },
-    ],
-    Tuesday: [
-        { hour: '12:00 AM', status: 'Cloudy', temp: 28 },
-        { hour: '03:00 AM', status: 'Light Rain', temp: 28 },
-        { hour: '06:00 AM', status: 'Cloudy', temp: 27 },
-        { hour: '09:00 AM', status: 'Light Rain', temp: 29 },
-        { hour: '12:00 PM', status: 'Cloudy', temp: 31 },
-        { hour: '03:00 PM', status: 'Thunderstorm', temp: 31 },
-        { hour: '06:00 PM', status: 'Light Rain', temp: 29 },
-        { hour: '09:00 PM', status: 'Thunderstorm', temp: 28 },
-    ],
-    Wednesday: [
-        { hour: '12:00 AM', status: 'Clear', temp: 26 },
-        { hour: '03:00 AM', status: 'Clear', temp: 25 },
-        { hour: '06:00 AM', status: 'Sunny', temp: 27 },
-        { hour: '09:00 AM', status: 'Sunny', temp: 30 },
-        { hour: '12:00 PM', status: 'Cloudy', temp: 32 },
-        { hour: '03:00 PM', status: 'Light Rain', temp: 31 },
-        { hour: '06:00 PM', status: 'Cloudy', temp: 29 },
-        { hour: '09:00 PM', status: 'Clear', temp: 27 },
-    ]
-};
+  Tuesday: [
+    { hour: '3 PM', status: 'Sun', temp: 20, icon: sunnyIcon },
+    { hour: '4 PM', status: 'Sun', temp: 20, icon: sunnyIcon },
+    { hour: '5 PM', status: 'Sun', temp: 20, icon: sunnyIcon },
+    { hour: '6 PM', status: 'Cloudy', temp: 19, icon: cloudyIcon },
+    { hour: '7 PM', status: 'Cloudy', temp: 18, icon: cloudyIcon },
+    { hour: '8 PM', status: 'Cloudy', temp: 18, icon: cloudyIcon },
+    { hour: '9 PM', status: 'Cloudy', temp: 17, icon: cloudyIcon },
+    { hour: '10 PM', status: 'Cloudy', temp: 17, icon: cloudyIcon },
+  ],
+  Wednesday: [
+    { hour: '3 PM', status: 'Sun', temp: 22, icon: sunnyIcon },
+    { hour: '4 PM', status: 'Sun', temp: 21, icon: sunnyIcon },
+    { hour: '5 PM', status: 'Cloudy', temp: 19, icon: cloudyIcon },
+    { hour: '6 PM', status: 'Cloudy', temp: 18, icon: cloudyIcon },
+    { hour: '7 PM', status: 'Rain', temp: 17, icon: rainIcon },
+    { hour: '8 PM', status: 'Rain', temp: 16, icon: rainIcon },
+    { hour: '9 PM', status: 'Cloudy', temp: 15, icon: cloudyIcon },
+    { hour: '10 PM', status: 'Cloudy', temp: 15, icon: cloudyIcon },
+    { hour: '8 PM', status: 'Rain', temp: 16, icon: rainIcon },
+    { hour: '9 PM', status: 'Cloudy', temp: 15, icon: cloudyIcon },
+    { hour: '10 PM', status: 'Cloudy', temp: 15, icon: cloudyIcon },
+  ],
+}
 
 export default function HourlyForecastCard({ data = mockHourlyData }) {
-    const [selectedDay, setSelectedDay] = useState('Tuesday');
-    const days = Object.keys(data);
-    const currentHourlyList = data[selectedDay] || [];
+  const [selectedDay, setSelectedDay] = useState('Tuesday')
+  const days = Object.keys(data)
+  const currentHourlyList = data[selectedDay] || []
 
-    return (
-        <div className="w-full max-w-md bg-slate-900 p-4 rounded-xl shadow-lg border border-slate-800 font-sans">
-            {/* Header & Pure CSS Dropdown */}
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
-                <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">
-                    Hourly Forecast
-                </h3>
+  return (
+    <aside className='flex h-[420px] w-full flex-col rounded-[22px] border border-white/10 bg-[#131d3b]/90 p-3 lg:h-full lg:min-h-0'>
+      <div className='mb-3 flex items-center justify-between gap-3 pb-3'>
+        <h3 className='brand-heading font-bold text-white'>Hourly forecast</h3>
 
-                <div className="relative inline-block">
-                    <select
-                        value={selectedDay}
-                        onChange={(e) => setSelectedDay(e.target.value)}
-                        className="appearance-none bg-slate-800 text-slate-200 text-xs font-medium py-1.5 pl-3 pr-7 rounded border border-slate-700 cursor-pointer focus:outline-none focus:border-slate-500"
-                    >
-                        {days.map((day) => (
-                            <option key={day} value={day}>
-                                {day}
-                            </option>
-                        ))}
-                    </select>
-                    {/* Custom SVG Icon instead of Lucide */}
-                    <span className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                        <svg
-                            className="w-3.5 h-3.5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M19 9l-7 7-7-7"
-                            />
-                        </svg>
-                    </span>
-                </div>
-            </div>
+        <div className='relative'>
+          <select
+            value={selectedDay}
+            onChange={(event) => setSelectedDay(event.target.value)}
+            className='appearance-none rounded-xl border border-white/10 bg-[#242f53] px-3 py-2 pr-8 text-sm font-medium text-[#edf1ff] outline-none transition hover:bg-[#29355d] focus:border-blue-400/80 focus:ring-2 focus:ring-blue-400/60'
+          >
+            {days.map((day) => (
+              <option key={day} value={day}>
+                {day}
+              </option>
+            ))}
+          </select>
 
-            {/* Hourly List: [ status | hour | temp ] */}
-            <div className="flex flex-col gap-2 max-h-72 overflow-y-auto pr-1">
-                {currentHourlyList.map((item, index) => (
-                    <div
-                        key={index}
-                        className="flex items-center justify-between p-2.5 rounded-lg bg-slate-800/60 hover:bg-slate-800 transition-colors border border-slate-700/30"
-                    >
-                        {/* Status Text */}
-                        <span className="text-xs text-slate-300 font-medium bg-slate-700/50 px-2.5 py-1 rounded w-36 text-left truncate">
-                            {item.status}
-                        </span>
-
-                        {/* Hour */}
-                        <span className="text-xs font-medium text-slate-400 text-center">
-                            {item.hour}
-                        </span>
-
-                        {/* Temp */}
-                        <span className="text-sm font-semibold text-white w-10 text-right">
-                            {item.temp}°
-                        </span>
-                    </div>
-                ))}
-            </div>
+          <svg
+            className='pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#dfe4ff]'
+            viewBox='0 0 20 20'
+            fill='none'
+            stroke='currentColor'
+            strokeWidth='1.8'
+            aria-hidden='true'
+          >
+            <path d='M5 7.5L10 12.5L15 7.5' strokeLinecap='round' strokeLinejoin='round' />
+          </svg>
         </div>
-    );
+      </div>
+
+      <div className='flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pr-1'>
+        {currentHourlyList.map((item, index) => (
+          <div
+            key={`${selectedDay}-${item.hour}-${index}`}
+            className='flex items-center justify-between gap-3 rounded-[16px] border border-white/8 bg-[#1a2240] px-3 py-2.5 transition hover:bg-[#1e2948]'
+          >
+            <div className='flex items-center gap-2.5'>
+              <img src={item.icon} alt={item.status} className='h-6 w-6 object-contain' />
+              <span className='text-sm text-[#dfe6ff]'>{item.hour}</span>
+            </div>
+
+            <span className='text-sm font-semibold text-white'>{item.temp}°</span>
+          </div>
+        ))}
+      </div>
+    </aside>
+  )
 }

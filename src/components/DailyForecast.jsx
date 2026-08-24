@@ -1,41 +1,39 @@
-import React from 'react';
+import cloudyIcon from '../assets/images/icon-overcast.webp'
+import rainIcon from '../assets/images/icon-rain.webp'
+import sunnyIcon from '../assets/images/icon-sunny.webp'
 
 const forecastData = [
-  { day: 'Mon', status: 'Rain', maxTemp: 32, minTemp: 26 },
-  { day: 'Tue', status: 'Thunderstorm', maxTemp: 31, minTemp: 25 },
-  { day: 'Wed', status: 'Rain', maxTemp: 30, minTemp: 26 },
-  { day: 'Thu', status: 'Cloudy', maxTemp: 33, minTemp: 27 },
-  { day: 'Fri', status: 'Sunny', maxTemp: 34, minTemp: 27 },
-  { day: 'Sat', status: 'Rain', maxTemp: 31, minTemp: 26 },
-  { day: 'Sun', status: 'Thunderstorm', maxTemp: 30, minTemp: 25 }
-];
+  { day: 'Tue', status: 'Cloudy', maxTemp: 20, minTemp: 14, icon: cloudyIcon },
+  { day: 'Wed', status: 'Cloudy', maxTemp: 21, minTemp: 15, icon: cloudyIcon },
+  { day: 'Thu', status: 'Sunny', maxTemp: 24, minTemp: 14, icon: sunnyIcon },
+  { day: 'Fri', status: 'Sunny', maxTemp: 25, minTemp: 16, icon: sunnyIcon },
+  { day: 'Sat', status: 'Rain', maxTemp: 16, minTemp: 15, icon: rainIcon },
+  { day: 'Sun', status: 'Cloudy', maxTemp: 16, minTemp: 14, icon: cloudyIcon },
+  { day: 'Mon', status: 'Rain', maxTemp: 15, minTemp: 13, icon: rainIcon },
+]
 
 export default function DailyForecast() {
   return (
-    <div>
-      <h2>Daily Forecast</h2>
-      <div className="flex gap-3 p-4 text-white rounded-xl overflow-x-auto w-fit">
-        {forecastData.map((item, index) => (
+    <section className='rounded-[20px] p-1'>
+      <div className='mb-4'>
+        <h2 className='brand-heading font-bold text-white'>Daily forecast</h2>
+      </div>
+
+      <div className='grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7'>
+        {forecastData.map((item) => (
           <div
-            key={index}
-            className="flex flex-col items-center justify-between p-3 rounded-lg bg-slate-800/60 hover:bg-slate-800 transition-colors w-24 gap-2"
+            key={item.day}
+            className='flex h-[120px] w-full flex-col items-center justify-between gap-2 rounded-[18px] border border-white/8 bg-[#1b2243] p-3 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]'
           >
-            {/* Day */}
-            <span className="font-medium text-slate-200 text-sm">{item.day}</span>
-
-            {/* Status Text */}
-            <span className="text-xs text-slate-300 font-medium bg-slate-700/50 px-2 py-1 rounded w-full text-center truncate">
-              {item.status}
-            </span>
-
-            {/* [max temp - min temp] */}
-            <div className="flex gap-4 items-center font-semibold">
-              <span className="text-white">{item.maxTemp}°</span>
-              <span className="text-white">{item.minTemp}°</span>
+            <span className='text-sm font-medium text-[#eaf0ff]'>{item.day}</span>
+            <img src={item.icon} alt={item.status} className='h-8 w-8 object-contain' />
+            <div className='flex items-center gap-2 text-sm font-semibold text-white'>
+              <span>{item.maxTemp}°</span>
+              <span className='text-[#d6d8e9]'>{item.minTemp}°</span>
             </div>
           </div>
         ))}
       </div>
-    </div>
-  );
+    </section>
+  )
 }

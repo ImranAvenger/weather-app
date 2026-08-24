@@ -7,10 +7,10 @@ function SearchBar() {
       <div className='relative grow'>
         {/* Leading Search Icon */}
         <div className='absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none'>
-          <img 
-            src="./src/assets/images/icon-search.svg" 
-            alt="Search" 
-            className="w-5 h-5 opacity-60" 
+          <img
+            src="./src/assets/images/icon-search.svg"
+            alt="Search"
+            className="w-5 h-5 opacity-60"
           />
         </div>
 

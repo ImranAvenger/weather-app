@@ -1,9 +1,12 @@
-function WeatherMetrics() {
+function WeatherMetrics({ units }) {
+  const feelsLike = units.temperature === 'fahrenheit' ? 64 : 18
+  const wind = units.windSpeed === 'mph' ? 9 : 14
+  const precipitation = units.precipitation === 'inches' ? 0 : 0
   const metrics = [
-    { label: 'Feels Like', value: '18°' },
+    { label: 'Feels Like', value: `${feelsLike}°` },
     { label: 'Humidity', value: '46%' },
-    { label: 'Wind', value: '14 km/h' },
-    { label: 'Precipitation', value: '0 mm' },
+    { label: 'Wind', value: `${wind} ${units.windSpeed === 'mph' ? 'mile/h' : 'km/h'}` },
+    { label: 'Precipitation', value: `${precipitation} ${units.precipitation === 'inches' ? 'in' : 'mm'}` },
   ]
 
   return (

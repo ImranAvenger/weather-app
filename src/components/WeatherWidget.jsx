@@ -1,7 +1,8 @@
 import weatherBg from '../assets/images/bg-today-large.svg'
 import sunnyIcon from '../assets/images/icon-sunny.webp'
 
-function WeatherWidget() {
+function WeatherWidget({ units }) {
+  const temperature = units.temperature === 'fahrenheit' ? 68 : 20
   return (
     <section
       aria-label='Current weather overview'
@@ -23,7 +24,7 @@ function WeatherWidget() {
           <img src={sunnyIcon} alt='Sunny conditions' className='current-icon object-contain' />
 
           <div className='text-right'>
-            <span className='brand-heading current-temp block font-bold leading-none'>20°</span>
+            <span className='brand-heading current-temp block font-bold leading-none'>{temperature}°</span>
           </div>
         </div>
       </div>

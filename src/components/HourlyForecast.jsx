@@ -2,6 +2,7 @@ import { useState } from 'react'
 import cloudyIcon from '../assets/images/icon-overcast.webp'
 import rainIcon from '../assets/images/icon-rain.webp'
 import sunnyIcon from '../assets/images/icon-sunny.webp'
+import ForecastDaySelector from './ForecastDaySelector'
 
 const mockHourlyData = {
   Tuesday: [
@@ -29,40 +30,20 @@ const mockHourlyData = {
   ],
 }
 
-export default function HourlyForecastCard({ data = mockHourlyData }) {
+export default function HourlyForecastCard({ data = mockHourlyData, units }) {
   const [selectedDay, setSelectedDay] = useState('Tuesday')
   const days = Object.keys(data)
   const currentHourlyList = data[selectedDay] || []
+  const formatTemperature = (temperature) => units.temperature === 'fahrenheit'
+    ? `${Math.round((temperature * 9) / 5 + 32)}°`
+    : `${temperature}°`
 
   return (
     <aside className='hourly-panel flex w-full flex-col rounded-[22px] border border-white/10 bg-[#131d3b]/90'>
       <div className='hourly-header flex items-center justify-between gap-3'>
         <h3 className='brand-heading font-bold text-white'>Hourly forecast</h3>
 
-        <div className='relative'>
-          <select
-            value={selectedDay}
-            onChange={(event) => setSelectedDay(event.target.value)}
-            className='appearance-none rounded-xl border border-white/10 bg-[#242f53] px-3 py-2 pr-8 text-sm font-medium text-[#edf1ff] outline-none transition hover:bg-[#29355d] focus:border-blue-400/80 focus:ring-2 focus:ring-blue-400/60'
-          >
-            {days.map((day) => (
-              <option key={day} value={day}>
-                {day}
-              </option>
-            ))}
-          </select>
-
-          <svg
-            className='pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#dfe4ff]'
-            viewBox='0 0 20 20'
-            fill='none'
-            stroke='currentColor'
-            strokeWidth='1.8'
-            aria-hidden='true'
-          >
-            <path d='M5 7.5L10 12.5L15 7.5' strokeLinecap='round' strokeLinejoin='round' />
-          </svg>
-        </div>
+        <ForecastDaySelector days={days} selectedDay={selectedDay} onChange={setSelectedDay} />
       </div>
 
       <div className='hourly-list flex min-h-0 flex-1 flex-col overflow-y-auto'>
@@ -76,7 +57,7 @@ export default function HourlyForecastCard({ data = mockHourlyData }) {
               <span className='text-sm text-[#dfe6ff]'>{item.hour}</span>
             </div>
 
-            <span className='text-sm font-semibold text-white'>{item.temp}°</span>
+            <span className='text-sm font-semibold text-white'>{formatTemperature(item.temp)}</span>
           </div>
         ))}
       </div>

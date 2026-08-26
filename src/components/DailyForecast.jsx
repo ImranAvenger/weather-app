@@ -12,7 +12,10 @@ const forecastData = [
   { day: 'Mon', status: 'Rain', maxTemp: 15, minTemp: 13, icon: rainIcon },
 ]
 
-export default function DailyForecast() {
+export default function DailyForecast({ units }) {
+  const formatTemperature = (temperature) => units.temperature === 'fahrenheit'
+    ? `${Math.round((temperature * 9) / 5 + 32)}°`
+    : `${temperature}°`
   return (
     <section className='daily-section rounded-[20px]'>
       <div className='daily-heading'>
@@ -28,8 +31,8 @@ export default function DailyForecast() {
             <span className='text-sm font-medium text-[#eaf0ff]'>{item.day}</span>
             <img src={item.icon} alt={item.status} className='h-8 w-8 object-contain' />
             <div className='flex items-center gap-2 text-sm font-semibold text-white'>
-              <span>{item.maxTemp}°</span>
-              <span className='text-[#d6d8e9]'>{item.minTemp}°</span>
+              <span>{formatTemperature(item.maxTemp)}</span>
+              <span className='text-[#d6d8e9]'>{formatTemperature(item.minTemp)}</span>
             </div>
           </div>
         ))}

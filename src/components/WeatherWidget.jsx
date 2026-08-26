@@ -24,7 +24,7 @@ function WeatherWidget({ units }) {
           <img src={sunnyIcon} alt='Sunny conditions' className='current-icon object-contain' />
 
           <div className='text-right'>
-            <span className='brand-heading current-temp block font-bold leading-none'>{temperature}°</span>
+            <span className='brand-heading current-temp inline-block -skew-x-6 font-bold leading-none'>{temperature}°</span>
           </div>
         </div>
       </div>

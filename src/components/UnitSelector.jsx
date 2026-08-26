@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import unitsIcon from '../assets/images/icon-units.svg'
 
 const unitOptions = [
   { key: 'temperature', label: 'Temperature', options: [{ value: 'celsius', label: 'Celsius (°C)' }, { value: 'fahrenheit', label: 'Fahrenheit (°F)' }] },
@@ -35,6 +36,7 @@ export default function UnitSelector({ units, onChange }) {
         aria-haspopup='dialog'
         className='inline-flex items-center gap-2 rounded-xl border border-white/10 bg-[#1d2345] px-3.5 py-2 text-sm font-medium text-white shadow-[0_8px_25px_rgba(15,12,38,0.25)] transition hover:border-white/20 hover:bg-[#232b52] focus:outline-none focus:ring-2 focus:ring-blue-500/80 focus:ring-offset-2 focus:ring-offset-[#111b3a]'
       >
+        <img src={unitsIcon} alt='' className='h-4 w-4 opacity-90' aria-hidden='true' />
         <span>Units</span>
         <svg className={`h-3.5 w-3.5 opacity-80 transition-transform ${isOpen ? 'rotate-180' : ''}`} viewBox='0 0 20 20' fill='none' stroke='currentColor' strokeWidth='1.8' aria-hidden='true'>
           <path d='M5 7.5L10 12.5L15 7.5' strokeLinecap='round' strokeLinejoin='round' />

@@ -2,8 +2,8 @@ import searchIcon from '../assets/images/icon-search.svg'
 
 function SearchBar() {
   return (
-    <div className='flex w-full max-w-[680px] items-center gap-3'>
-      <label className='relative block h-14 flex-1'>
+    <div className='search-bar flex w-full max-w-[680px] items-center gap-3 max-[479px]:flex-col max-[479px]:items-stretch'>
+      <label className='search-field relative block h-14 flex-1 max-[479px]:w-full max-[479px]:flex-none'>
         <span className='sr-only'>Search for a place</span>
         <img
           src={searchIcon}
@@ -21,7 +21,7 @@ function SearchBar() {
 
       <button
         type='button'
-        className='h-14 rounded-2xl bg-[#505fe7] px-6 text-base font-medium text-white shadow-[0_8px_18px_rgba(80,95,231,0.35)] transition hover:bg-[#4757d9] focus:outline-none focus:ring-2 focus:ring-blue-300/70 focus:ring-offset-2 focus:ring-offset-[#111b3a]'
+        className='search-button h-14 rounded-2xl bg-[#505fe7] px-6 text-base font-medium text-white shadow-[0_8px_18px_rgba(80,95,231,0.35)] transition hover:bg-[#4757d9] focus:outline-none focus:ring-2 focus:ring-blue-300/70 focus:ring-offset-2 focus:ring-offset-[#111b3a] max-[479px]:w-full'
       >
         Search
       </button>

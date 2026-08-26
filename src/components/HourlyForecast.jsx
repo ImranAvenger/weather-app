@@ -35,8 +35,8 @@ export default function HourlyForecastCard({ data = mockHourlyData }) {
   const currentHourlyList = data[selectedDay] || []
 
   return (
-    <aside className='flex h-[420px] w-full flex-col rounded-[22px] border border-white/10 bg-[#131d3b]/90 p-3 lg:h-full lg:min-h-0'>
-      <div className='mb-3 flex items-center justify-between gap-3 pb-3'>
+    <aside className='hourly-panel flex w-full flex-col rounded-[22px] border border-white/10 bg-[#131d3b]/90'>
+      <div className='hourly-header flex items-center justify-between gap-3'>
         <h3 className='brand-heading font-bold text-white'>Hourly forecast</h3>
 
         <div className='relative'>
@@ -65,11 +65,11 @@ export default function HourlyForecastCard({ data = mockHourlyData }) {
         </div>
       </div>
 
-      <div className='flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pr-1'>
+      <div className='hourly-list flex min-h-0 flex-1 flex-col overflow-y-auto'>
         {currentHourlyList.map((item, index) => (
           <div
             key={`${selectedDay}-${item.hour}-${index}`}
-            className='flex items-center justify-between gap-3 rounded-[16px] border border-white/8 bg-[#1a2240] px-3 py-2.5 transition hover:bg-[#1e2948]'
+            className='hourly-row flex items-center justify-between gap-3 rounded-[16px] border border-white/8 bg-[#1a2240] transition hover:bg-[#1e2948]'
           >
             <div className='flex items-center gap-2.5'>
               <img src={item.icon} alt={item.status} className='h-6 w-6 object-contain' />

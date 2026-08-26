@@ -13,17 +13,17 @@ function WeatherWidget() {
         backgroundRepeat: 'no-repeat',
       }}
     >
-      <div className='flex flex-col gap-5 px-5 py-10 sm:px-6 sm:py-12 md:flex-row md:items-center md:justify-between md:px-7 md:py-14'>
+      <div className='weather-widget-body flex flex-col gap-5 md:flex-row md:items-center md:justify-between'>
         <div className='space-y-2'>
-          <h2 className='brand-heading text-[2.1rem] font-bold leading-none tracking-tighter'>Berlin, Germany</h2>
+          <h2 className='brand-heading current-city font-bold leading-none'>Berlin, Germany</h2>
           <p className='text-[0.95rem] text-[#ececff]'>Tuesday, Aug 5, 2025</p>
         </div>
 
         <div className='flex items-center justify-between gap-5 md:justify-end'>
-          <img src={sunnyIcon} alt='Sunny conditions' className='h-13 w-13 sm:h-16 sm:w-16' />
+          <img src={sunnyIcon} alt='Sunny conditions' className='current-icon object-contain' />
 
           <div className='text-right'>
-            <span className='brand-heading block text-[4rem] font-bold leading-none tracking-[-0.08em] sm:text-[4.7rem]'>20°</span>
+            <span className='brand-heading current-temp block font-bold leading-none'>20°</span>
           </div>
         </div>
       </div>

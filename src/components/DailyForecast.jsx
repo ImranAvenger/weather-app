@@ -14,16 +14,16 @@ const forecastData = [
 
 export default function DailyForecast() {
   return (
-    <section className='rounded-[20px] p-1'>
-      <div className='mb-4'>
+    <section className='daily-section rounded-[20px]'>
+      <div className='daily-heading'>
         <h2 className='brand-heading font-bold text-white'>Daily forecast</h2>
       </div>
 
-      <div className='grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7'>
+      <div className='daily-grid grid'>
         {forecastData.map((item) => (
           <div
             key={item.day}
-            className='flex h-[120px] w-full flex-col items-center justify-between gap-2 rounded-[18px] border border-white/8 bg-[#1b2243] p-3 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]'
+            className='daily-card flex w-full flex-col items-center justify-between gap-2 rounded-[18px] border border-white/8 bg-[#1b2243] text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]'
           >
             <span className='text-sm font-medium text-[#eaf0ff]'>{item.day}</span>
             <img src={item.icon} alt={item.status} className='h-8 w-8 object-contain' />

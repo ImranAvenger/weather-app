@@ -16,7 +16,7 @@ export function getWeatherDetails(code, isDay = 1) {
   if ([61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return { ...details, label: 'Rain', icon: 'rain' }
   if ([71, 73, 75, 77, 85, 86].includes(code)) return { ...details, label: 'Snow', icon: 'snow' }
   if ([95, 96, 99].includes(code)) return { ...details, label: 'Thunderstorm', icon: 'storm' }
-  return { ...details, label: isNight ? 'Cloudy night' : 'Clear sky', icon: 'cloudy' }
+  return { ...details, label: isNight ? 'Cloudy night' : 'Cloudy', icon: 'cloudy' }
 }
 
 export async function searchPlaces(query, signal) {

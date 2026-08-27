@@ -4,7 +4,7 @@ import unitsIcon from '../assets/images/icon-units.svg'
 // Each group maps directly to one property in the shared units state object.
 const unitOptions = [
   { key: 'temperature', label: 'Temperature', options: [{ value: 'celsius', label: 'Celsius (°C)' }, { value: 'fahrenheit', label: 'Fahrenheit (°F)' }] },
-  { key: 'windSpeed', label: 'Wind speed', options: [{ value: 'kmh', label: 'km/h' }, { value: 'mph', label: 'mile/h' }] },
+  { key: 'windSpeed', label: 'Wind speed', options: [{ value: 'kmh', label: 'km/h' }, { value: 'mph', label: 'mph' }] },
   { key: 'precipitation', label: 'Precipitation', options: [{ value: 'mm', label: 'Millimeters (mm)' }, { value: 'inches', label: 'Inches (in)' }] },
 ]
 

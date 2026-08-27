@@ -3,7 +3,7 @@ function WeatherMetrics({ units, weather }) {
   const current = weather?.current
   const tempUnit = weather?.current_units?.temperature_2m || '°C'
   const windUnit = weather?.current_units?.wind_speed_10m || (units.windSpeed === 'mph' ? 'mph' : 'km/h')
-  const precipitationUnit = weather?.current_units?.precipitation || (units.precipitation === 'inches' ? 'in' : 'mm')
+  const precipitationUnit = weather?.current_units?.precipitation || (units.precipitation === 'inches' ? 'inch' : 'mm')
   // Convert the API's current-condition object into a render-friendly card list.
   const metrics = [
     { label: 'Feels Like', value: current ? `${Math.round(current.apparent_temperature)}${tempUnit}` : '—' },

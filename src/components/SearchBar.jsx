@@ -58,12 +58,25 @@ function SearchBar({ places = [], onPlaceSelect, onSearch, onQueryChange }) {
   const handleKeyDown = (event) => {
     // Provide standard combobox navigation without moving focus from the text field.
     if (event.key === 'ArrowDown') {
+      if (!suggestions.length) {
+        setIsOpen(true)
+        setActiveIndex(-1)
+        return
+      }
+
       event.preventDefault()
       setIsOpen(true)
-      setActiveIndex((index) => Math.min(index + 1, suggestions.length - 1))
+      setActiveIndex((index) => (index < 0 ? 0 : Math.min(index + 1, suggestions.length - 1)))
     } else if (event.key === 'ArrowUp') {
+      if (!suggestions.length) {
+        setIsOpen(true)
+        setActiveIndex(-1)
+        return
+      }
+
       event.preventDefault()
-      setActiveIndex((index) => Math.max(index - 1, 0))
+      setIsOpen(true)
+      setActiveIndex((index) => (index <= 0 ? suggestions.length - 1 : index - 1))
     } else if (event.key === 'Enter') {
       event.preventDefault()
       submitSearch()
@@ -97,7 +110,7 @@ function SearchBar({ places = [], onPlaceSelect, onSearch, onQueryChange }) {
           onChange={(event) => {
             const nextQuery = event.target.value
             setQuery(nextQuery)
-            setIsOpen(true)
+            setIsOpen(nextQuery.trim().length >= 2)
             setActiveIndex(-1)
             const requestId = ++searchRequestId.current
 
@@ -113,7 +126,7 @@ function SearchBar({ places = [], onPlaceSelect, onSearch, onQueryChange }) {
               if (searchRequestId.current === requestId) setIsSearching(false)
             })
           }}
-          onFocus={() => setIsOpen(true)}
+          onFocus={() => setIsOpen(query.trim().length >= 2)}
           onKeyDown={handleKeyDown}
           className='block h-full w-full rounded-2xl border border-[#2d447b] bg-[#1d2345] pl-12 pr-4 text-base text-white placeholder:text-[#d7d4ef]/70 outline-none transition focus:border-blue-400/80 focus:ring-2 focus:ring-blue-400/40'
         />

@@ -1,16 +1,50 @@
-# React + Vite
+# Weather Now
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Weather Now is a simple, responsive weather dashboard for checking current conditions and a seven-day forecast for cities around the world.
 
-Currently, two official plugins are available:
+Search for a place to see its current temperature, feels-like temperature, humidity, wind, precipitation, daily forecast, and hourly forecast. Weather data is provided by [Open-Meteo](https://open-meteo.com/), so no API key is required.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Using the app
 
-## React Compiler
+1. Type a city or place name into the search field.
+2. Choose a suggested location, or press **Search** to use the best match.
+3. Use the **Units** menu to choose Celsius/Fahrenheit, km/h/mph, and millimetres/inches.
+4. Select a day in the hourly forecast to view that day’s conditions.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The dashboard includes clear loading, no-result, and connection-error states. If the weather service is temporarily unavailable, select **Retry** to try the same request again.
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Global place search with Open-Meteo geocoding
+- Live current weather and seven-day forecasts
+- Hourly forecast by selected day
+- Day/night-aware weather icons powered by Lucide
+- Metric and imperial unit options
+- Responsive layout for mobile and desktop
+- Accessible search, loading, and error feedback
+
+## Run locally
+
+You need a current LTS version of [Node.js](https://nodejs.org/).
+
+```bash
+npm install
+npm run dev
+```
+
+Vite will show a local URL (usually `http://localhost:5173`) to open in your browser.
+
+## Other commands
+
+```bash
+npm run lint    # Check code quality
+npm run build   # Create a production build
+npm run preview # Preview the production build locally
+```
+
+## Technology
+
+- React and Vite
+- Tailwind CSS
+- Open-Meteo Forecast and Geocoding APIs
+- Lucide React icons

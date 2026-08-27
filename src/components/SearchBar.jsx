@@ -1,20 +1,13 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import searchIcon from '../assets/images/icon-search.svg'
 
-const defaultPlaces = [
-  { id: 'london-gb', name: 'London', region: 'England', country: 'United Kingdom' },
-  { id: 'new-york-us', name: 'New York', region: 'New York', country: 'United States' },
-  { id: 'paris-fr', name: 'Paris', region: 'Île-de-France', country: 'France' },
-  { id: 'tokyo-jp', name: 'Tokyo', region: 'Tokyo', country: 'Japan' },
-  { id: 'sydney-au', name: 'Sydney', region: 'New South Wales', country: 'Australia' },
-]
-
-function SearchBar({ places = defaultPlaces, onPlaceSelect, onSearch, onQueryChange }) {
+function SearchBar({ places = [], onPlaceSelect, onSearch, onQueryChange }) {
   const [query, setQuery] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const [activeIndex, setActiveIndex] = useState(-1)
+  const [isSearching, setIsSearching] = useState(false)
   const searchRef = useRef(null)
-  const inputRef = useRef(null)
+  const searchRequestId = useRef(0)
   const listboxId = useId()
 
   const suggestions = useMemo(() => {
@@ -84,7 +77,6 @@ function SearchBar({ places = defaultPlaces, onPlaceSelect, onSearch, onQueryCha
           className='pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 opacity-70'
         />
         <input
-          ref={inputRef}
           type='text'
           aria-label='Search for a place'
           placeholder='Search for a place...'
@@ -95,10 +87,22 @@ function SearchBar({ places = defaultPlaces, onPlaceSelect, onSearch, onQueryCha
           aria-expanded={isOpen}
           aria-activedescendant={activeIndex >= 0 ? `${listboxId}-${activeIndex}` : undefined}
           onChange={(event) => {
-            setQuery(event.target.value)
+            const nextQuery = event.target.value
+            setQuery(nextQuery)
             setIsOpen(true)
             setActiveIndex(-1)
-            onQueryChange?.(event.target.value)
+            const requestId = ++searchRequestId.current
+
+            if (nextQuery.trim().length < 2) {
+              setIsSearching(false)
+              onQueryChange?.(nextQuery)
+              return
+            }
+
+            setIsSearching(true)
+            Promise.resolve(onQueryChange?.(nextQuery)).finally(() => {
+              if (searchRequestId.current === requestId) setIsSearching(false)
+            })
           }}
           onFocus={() => setIsOpen(true)}
           onKeyDown={handleKeyDown}
@@ -107,7 +111,12 @@ function SearchBar({ places = defaultPlaces, onPlaceSelect, onSearch, onQueryCha
 
         {isOpen && (
           <ul id={listboxId} role='listbox' aria-label='Place suggestions' className='absolute z-30 mt-2 w-full overflow-hidden rounded-2xl border border-white/10 bg-[#1d2345] p-1.5 shadow-[0_16px_40px_rgba(9,13,31,0.45)]'>
-            {suggestions.length > 0 ? suggestions.map((place, index) => (
+            {isSearching ? (
+              <li className='flex items-center gap-3 px-3 py-2.5 text-sm text-[#bfc5e4]' role='status'>
+                <span className='h-4 w-4 animate-spin rounded-full border-2 border-[#8c97ff]/30 border-t-[#8c97ff]' aria-hidden='true' />
+                Searching for places…
+              </li>
+            ) : suggestions.length > 0 ? suggestions.map((place, index) => (
               <li key={place.id || `${place.name}-${place.country}`} id={`${listboxId}-${index}`} role='option' aria-selected={activeIndex === index}>
                 <button
                   type='button'
@@ -126,7 +135,7 @@ function SearchBar({ places = defaultPlaces, onPlaceSelect, onSearch, onQueryCha
                 </button>
               </li>
             )) : (
-              <li className='px-3 py-2.5 text-sm text-[#bfc5e4]'>No matching places found.</li>
+              <li className='px-3 py-2.5 text-sm text-[#bfc5e4]'>No search result found!</li>
             )}
           </ul>
         )}

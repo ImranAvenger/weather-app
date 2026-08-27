@@ -1,10 +1,10 @@
 import weatherBg from '../assets/images/bg-today-large.svg'
-import sunnyIcon from '../assets/images/icon-sunny.webp'
 import { formatDate, getWeatherDetails } from '../lib/weather'
+import WeatherIcon from './WeatherIcon'
 
-function WeatherWidget({ place, weather }) {
+function WeatherWidget({ place, weather, isLoading }) {
   const current = weather?.current
-  const condition = current ? getWeatherDetails(current.weather_code, current.is_day) : { label: 'Loading weather', icon: sunnyIcon }
+  const condition = current ? getWeatherDetails(current.weather_code, current.is_day) : { label: 'Loading weather', icon: 'cloudy' }
   return (
     <section
       aria-label='Current weather overview'
@@ -18,15 +18,15 @@ function WeatherWidget({ place, weather }) {
     >
       <div className='weather-widget-body flex flex-col gap-5 md:flex-row md:items-center md:justify-between'>
         <div className='space-y-2'>
-          <h2 className='brand-heading current-city font-bold leading-none'>{place.name}, {place.country}</h2>
-          <p className='text-[0.95rem] text-[#ececff]'>{weather?.current?.time ? formatDate(weather.current.time.slice(0, 10)) : 'Loading…'}</p>
+          <h2 className='brand-heading current-city font-bold leading-none'>{isLoading ? 'Loading…' : `${place.name}, ${place.country}`}</h2>
+          <p className='text-[0.95rem] text-[#ececff]'>{isLoading ? '' : weather?.current?.time ? formatDate(weather.current.time.slice(0, 10)) : '—'}</p>
         </div>
 
         <div className='flex items-center justify-between gap-5 md:justify-end'>
-          <img src={condition.icon} alt={condition.label} className='current-icon object-contain' />
+          {!isLoading && <WeatherIcon condition={condition} className='current-icon' />}
 
           <div className='text-right'>
-            <span className='brand-heading current-temp inline-block -skew-x-6 font-bold leading-none'>{current ? `${Math.round(current.temperature_2m)}°` : '—'}</span>
+            {!isLoading && <span className='brand-heading current-temp inline-block -skew-x-6 font-bold leading-none'>{current ? `${Math.round(current.temperature_2m)}°` : '—'}</span>}
           </div>
         </div>
       </div>

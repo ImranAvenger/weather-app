@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react'
 import ForecastDaySelector from './ForecastDaySelector'
 import { formatHour, getWeatherDetails } from '../lib/weather'
+import WeatherIcon from './WeatherIcon'
 
-export default function HourlyForecastCard({ weather }) {
+export default function HourlyForecastCard({ weather, isLoading }) {
   const days = weather?.daily?.time || []
   const [selectedDay, setSelectedDay] = useState('')
   const temperatureUnit = weather?.hourly_units?.temperature_2m || '°C'
@@ -28,13 +29,15 @@ export default function HourlyForecastCard({ weather }) {
       </div>
 
       <div className='hourly-list flex min-h-0 flex-1 flex-col overflow-y-auto'>
-        {currentHourlyList.map((item) => (
+        {isLoading ? Array.from({ length: 8 }, (_, index) => (
+          <div key={index} aria-hidden='true' className='hourly-row min-h-11 rounded-[16px] border border-white/8 bg-[#1a2240]' />
+        )) : currentHourlyList.map((item) => (
           <div
             key={item.time}
             className='hourly-row flex items-center justify-between gap-3 rounded-[16px] border border-white/8 bg-[#1a2240] transition hover:bg-[#1e2948]'
           >
             <div className='flex items-center gap-2.5'>
-              <img src={item.icon} alt={item.label} className='h-6 w-6 object-contain' />
+              <WeatherIcon condition={item} className='h-6 w-6' />
               <span className='text-sm text-[#dfe6ff]'>{formatHour(item.time)}</span>
             </div>
 

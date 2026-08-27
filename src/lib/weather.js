@@ -1,25 +1,19 @@
-import cloudyIcon from '../assets/images/icon-overcast.webp'
-import drizzleIcon from '../assets/images/icon-drizzle.webp'
-import fogIcon from '../assets/images/icon-fog.webp'
-import partlyCloudyIcon from '../assets/images/icon-partly-cloudy.webp'
-import rainIcon from '../assets/images/icon-rain.webp'
-import snowIcon from '../assets/images/icon-snow.webp'
-import stormIcon from '../assets/images/icon-storm.webp'
-import sunnyIcon from '../assets/images/icon-sunny.webp'
-
 const geocodingUrl = 'https://geocoding-api.open-meteo.com/v1/search'
 const forecastUrl = 'https://api.open-meteo.com/v1/forecast'
 
 export function getWeatherDetails(code, isDay = 1) {
-  if (code === 0) return { label: 'Clear sky', icon: sunnyIcon }
-  if ([1, 2].includes(code)) return { label: 'Partly cloudy', icon: partlyCloudyIcon }
-  if (code === 3) return { label: 'Overcast', icon: cloudyIcon }
-  if ([45, 48].includes(code)) return { label: 'Fog', icon: fogIcon }
-  if ([51, 53, 55, 56, 57].includes(code)) return { label: 'Drizzle', icon: drizzleIcon }
-  if ([61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return { label: 'Rain', icon: rainIcon }
-  if ([71, 73, 75, 77, 85, 86].includes(code)) return { label: 'Snow', icon: snowIcon }
-  if ([95, 96, 99].includes(code)) return { label: 'Thunderstorm', icon: stormIcon }
-  return { label: isDay ? 'Clear sky' : 'Cloudy', icon: isDay ? sunnyIcon : cloudyIcon }
+  const isNight = Number(isDay) === 0
+  const details = { code, isNight }
+
+  if (code === 0) return { ...details, label: isNight ? 'Clear night' : 'Clear sky', icon: isNight ? 'moon' : 'sun' }
+  if ([1, 2].includes(code)) return { ...details, label: isNight ? 'Partly cloudy night' : 'Partly cloudy', icon: isNight ? 'partlyCloudyNight' : 'partlyCloudyDay' }
+  if (code === 3) return { ...details, label: 'Overcast', icon: 'cloudy' }
+  if ([45, 48].includes(code)) return { ...details, label: 'Fog', icon: 'fog' }
+  if ([51, 53, 55, 56, 57].includes(code)) return { ...details, label: 'Drizzle', icon: 'drizzle' }
+  if ([61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return { ...details, label: 'Rain', icon: 'rain' }
+  if ([71, 73, 75, 77, 85, 86].includes(code)) return { ...details, label: 'Snow', icon: 'snow' }
+  if ([95, 96, 99].includes(code)) return { ...details, label: 'Thunderstorm', icon: 'storm' }
+  return { ...details, label: isNight ? 'Cloudy night' : 'Clear sky', icon: 'cloudy' }
 }
 
 export async function searchPlaces(query, signal) {

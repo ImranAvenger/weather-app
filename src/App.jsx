@@ -7,45 +7,54 @@ import WeatherMetrics from './components/WeatherMetrics'
 import DailyForecast from './components/DailyForecast'
 import HourlyForecast from './components/HourlyForecast'
 import { getForecast, searchPlaces } from './lib/weather'
+import errorIcon from './assets/images/icon-error.svg'
+import retryIcon from './assets/images/icon-retry.svg'
 
-const defaultPlace = { id: 'berlin-de', name: 'Berlin', region: 'Berlin', country: 'Germany', latitude: 52.52, longitude: 13.41 }
 
 function App() {
   const [units, setUnits] = useState({ temperature: 'celsius', windSpeed: 'kmh', precipitation: 'mm' })
-  const [place, setPlace] = useState(defaultPlace)
+  const [place, setPlace] = useState(null)
   const [places, setPlaces] = useState([])
   const [weather, setWeather] = useState(null)
-  const [status, setStatus] = useState('loading')
-  const [error, setError] = useState('')
+  const [status, setStatus] = useState('empty')
+  const [requestNonce, setRequestNonce] = useState(0)
+  const [isRetrying, setIsRetrying] = useState(false)
   const searchController = useRef(null)
+  const failedRequest = useRef(null)
 
   useEffect(() => {
+    if (!place) return undefined
     const controller = new AbortController()
     getForecast(place, units, controller.signal)
       .then((forecast) => {
         setWeather(forecast)
         setStatus('success')
+        setIsRetrying(false)
+        failedRequest.current = null
       })
       .catch((requestError) => {
         if (requestError.name !== 'AbortError') {
-          setError(requestError.message)
           setStatus('error')
+          setIsRetrying(false)
+          failedRequest.current = { type: 'forecast' }
         }
       })
     return () => controller.abort()
-  }, [place, units])
+  }, [place, units, requestNonce])
 
   const beginLoading = () => {
     setStatus('loading')
-    setError('')
+    setWeather(null)
+    failedRequest.current = null
   }
 
   const handleUnitsChange = (nextUnits) => {
-    beginLoading()
+    if (place) beginLoading()
     setUnits(nextUnits)
   }
 
   const handlePlaceSelect = (nextPlace) => {
+    setIsRetrying(false)
     beginLoading()
     setPlace(nextPlace)
   }
@@ -62,7 +71,7 @@ function App() {
       const results = await searchPlaces(query, controller.signal)
       if (searchController.current === controller) setPlaces(results)
     } catch (requestError) {
-      if (requestError.name !== 'AbortError') setPlaces([])
+      if (requestError.name !== 'AbortError' && searchController.current === controller) setPlaces([])
     }
   }
 
@@ -70,10 +79,32 @@ function App() {
     try {
       const [firstResult] = await searchPlaces(query)
       if (firstResult) handlePlaceSelect(firstResult)
-      else setError('No matching location was found.')
-    } catch (requestError) {
-      setError(requestError.message)
+      else {
+        setPlace(null)
+        setWeather(null)
+        setStatus('empty')
+        setIsRetrying(false)
+        failedRequest.current = null
+      }
+    } catch {
+      setStatus('error')
+      setIsRetrying(false)
+      failedRequest.current = { type: 'search', query }
     }
+  }
+
+  const retryRequest = async () => {
+    const retryTarget = failedRequest.current
+    if (!retryTarget) return
+
+    setIsRetrying(true)
+    if (retryTarget.type === 'forecast') {
+      beginLoading()
+      setRequestNonce((value) => value + 1)
+      return
+    }
+
+    await handleSearch(retryTarget.query)
   }
 
   return (
@@ -91,20 +122,34 @@ function App() {
           <SearchBar places={places} onPlaceSelect={handlePlaceSelect} onSearch={handleSearch} onQueryChange={handleQueryChange} />
         </div>
 
-        {status === 'loading' && <p className='mt-4 text-center text-sm text-[#d6d8ed]' role='status'>Loading weather for {place.name}…</p>}
-        {error && <p className='mt-4 text-center text-sm text-red-200' role='alert'>{error}</p>}
+        {status === 'error' || isRetrying ? (
+          <section className='mt-8 rounded-[20px] border border-white/10 bg-[#1d2345]/80 px-6 py-14 text-center shadow-[0_12px_32px_rgba(9,13,31,0.3)]' role='alert'>
+            <img src={errorIcon} alt='' aria-hidden='true' className='mx-auto h-10 w-10' />
+            <h2 className='brand-heading mt-5 text-2xl font-bold text-white'>{isRetrying ? 'Retrying…' : 'Something went wrong.'}</h2>
+            <p className='mx-auto mt-2 max-w-md text-sm leading-6 text-[#cbd1ea]'>{isRetrying ? 'Trying to reconnect to the weather service.' : 'We couldn\'t connect to the server (API error). Please try again in a few moments.'}</p>
+            <button type='button' onClick={retryRequest} disabled={isRetrying} aria-busy={isRetrying} className='mx-auto mt-6 inline-flex items-center gap-2 rounded-xl bg-[#505fe7] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4757d9] focus:outline-none focus:ring-2 focus:ring-blue-300/70 focus:ring-offset-2 focus:ring-offset-[#1d2345] disabled:cursor-wait disabled:opacity-70'>
+              <img src={retryIcon} alt='' aria-hidden='true' className={`h-[18px] w-[18px] brightness-0 invert ${isRetrying ? 'animate-spin' : ''}`} />
+              {isRetrying ? 'Retrying…' : 'Retry'}
+            </button>
+          </section>
+        ) : place ? (
+          <div className='dashboard-grid grid'> {/* dashboard */}
+            <div className='content-stack min-w-0 w-full'> {/* left column */}
+              <WeatherWidget place={place} weather={weather} isLoading={status === 'loading'} />
+              <WeatherMetrics units={units} weather={weather} />
+              <DailyForecast weather={weather} isLoading={status === 'loading'} />
+            </div>
 
-        <div className='dashboard-grid grid'> {/* dashboard */}
-          <div className='content-stack min-w-0 w-full'> {/* left column */}
-            <WeatherWidget place={place} weather={weather} />
-            <WeatherMetrics units={units} weather={weather} />
-            <DailyForecast weather={weather} />
+            <div className='hourly-column min-h-0'> {/* right column */}
+              <HourlyForecast weather={weather} isLoading={status === 'loading'} />
+            </div>
           </div>
-
-          <div className='hourly-column min-h-0'> {/* right column */}
-            <HourlyForecast weather={weather} />
-          </div>
-        </div>
+        ) : (
+          <section className='mt-8 rounded-[20px] border border-dashed border-white/15 bg-[#1d2345]/60 px-6 py-14 text-center shadow-[0_12px_32px_rgba(9,13,31,0.2)]' aria-live='polite'>
+            <p className='brand-heading text-2xl font-bold text-white'>No search result found!</p>
+            <p className='mt-2 text-sm text-[#cbd1ea]'>Search for a city to view its weather forecast.</p>
+          </section>
+        )}
       </div>
     </main>
   )

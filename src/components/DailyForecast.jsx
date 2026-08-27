@@ -1,6 +1,7 @@
 import { formatDay, getWeatherDetails } from '../lib/weather'
+import WeatherIcon from './WeatherIcon'
 
-export default function DailyForecast({ weather }) {
+export default function DailyForecast({ weather, isLoading }) {
   const daily = weather?.daily
   const temperatureUnit = weather?.daily_units?.temperature_2m_max || '°C'
   const forecast = daily?.time?.map((date, index) => ({
@@ -16,13 +17,15 @@ export default function DailyForecast({ weather }) {
       </div>
 
       <div className='daily-grid grid'>
-        {forecast.map((item) => (
+        {isLoading ? Array.from({ length: 7 }, (_, index) => (
+          <div key={index} aria-hidden='true' className='daily-card w-full rounded-[18px] border border-white/8 bg-[#1b2243] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]' />
+        )) : forecast.map((item) => (
           <div
             key={item.date}
             className='daily-card flex w-full flex-col items-center justify-between gap-2 rounded-[18px] border border-white/8 bg-[#1b2243] text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]'
           >
             <span className='text-sm font-medium text-[#eaf0ff]'>{formatDay(item.date)}</span>
-            <img src={item.icon} alt={item.label} className='h-8 w-8 object-contain' />
+            <WeatherIcon condition={item} className='h-8 w-8' />
             <div className='flex items-center gap-2 text-sm font-semibold text-white'>
               <span>{Math.round(item.maxTemp)}{temperatureUnit}</span>
               <span className='text-[#d6d8e9]'>{Math.round(item.minTemp)}{temperatureUnit}</span>

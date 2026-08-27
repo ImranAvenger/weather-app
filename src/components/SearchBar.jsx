@@ -9,7 +9,7 @@ const defaultPlaces = [
   { id: 'sydney-au', name: 'Sydney', region: 'New South Wales', country: 'Australia' },
 ]
 
-function SearchBar({ places = defaultPlaces, onPlaceSelect, onSearch }) {
+function SearchBar({ places = defaultPlaces, onPlaceSelect, onSearch, onQueryChange }) {
   const [query, setQuery] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const [activeIndex, setActiveIndex] = useState(-1)
@@ -98,6 +98,7 @@ function SearchBar({ places = defaultPlaces, onPlaceSelect, onSearch }) {
             setQuery(event.target.value)
             setIsOpen(true)
             setActiveIndex(-1)
+            onQueryChange?.(event.target.value)
           }}
           onFocus={() => setIsOpen(true)}
           onKeyDown={handleKeyDown}

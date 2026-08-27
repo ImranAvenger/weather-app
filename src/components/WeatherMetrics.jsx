@@ -1,12 +1,13 @@
-function WeatherMetrics({ units }) {
-  const feelsLike = units.temperature === 'fahrenheit' ? 64 : 18
-  const wind = units.windSpeed === 'mph' ? 9 : 14
-  const precipitation = units.precipitation === 'inches' ? 0 : 0
+function WeatherMetrics({ units, weather }) {
+  const current = weather?.current
+  const tempUnit = weather?.current_units?.temperature_2m || '°C'
+  const windUnit = weather?.current_units?.wind_speed_10m || (units.windSpeed === 'mph' ? 'mph' : 'km/h')
+  const precipitationUnit = weather?.current_units?.precipitation || (units.precipitation === 'inches' ? 'in' : 'mm')
   const metrics = [
-    { label: 'Feels Like', value: `${feelsLike}°` },
-    { label: 'Humidity', value: '46%' },
-    { label: 'Wind', value: `${wind} ${units.windSpeed === 'mph' ? 'mile/h' : 'km/h'}` },
-    { label: 'Precipitation', value: `${precipitation} ${units.precipitation === 'inches' ? 'in' : 'mm'}` },
+    { label: 'Feels Like', value: current ? `${Math.round(current.apparent_temperature)}${tempUnit}` : '—' },
+    { label: 'Humidity', value: current ? `${current.relative_humidity_2m}%` : '—' },
+    { label: 'Wind', value: current ? `${Math.round(current.wind_speed_10m)} ${windUnit}` : '—' },
+    { label: 'Precipitation', value: current ? `${current.precipitation} ${precipitationUnit}` : '—' },
   ]
 
   return (

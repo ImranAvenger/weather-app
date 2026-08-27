@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-export default function ForecastDaySelector({ days, selectedDay, onChange }) {
+export default function ForecastDaySelector({ days, selectedDay, onChange, formatDay = false }) {
   const [isOpen, setIsOpen] = useState(false)
   const selectorRef = useRef(null)
 
@@ -27,7 +27,7 @@ export default function ForecastDaySelector({ days, selectedDay, onChange }) {
         aria-haspopup='listbox'
         className='inline-flex min-w-28 items-center justify-between gap-3 rounded-xl border border-white/10 bg-[#242f53] px-3 py-2 text-sm font-medium text-[#edf1ff] transition hover:bg-[#29355d] focus:outline-none focus:ring-2 focus:ring-blue-400/60'
       >
-        <span>{selectedDay}</span>
+        <span>{formatDay && selectedDay ? new Intl.DateTimeFormat(undefined, { weekday: 'short' }).format(new Date(`${selectedDay}T12:00:00`)) : selectedDay}</span>
         <svg className={`h-3.5 w-3.5 transition-transform ${isOpen ? 'rotate-180' : ''}`} viewBox='0 0 20 20' fill='none' stroke='currentColor' strokeWidth='1.8' aria-hidden='true'>
           <path d='M5 7.5L10 12.5L15 7.5' strokeLinecap='round' strokeLinejoin='round' />
         </svg>
@@ -47,7 +47,7 @@ export default function ForecastDaySelector({ days, selectedDay, onChange }) {
                 onClick={() => chooseDay(day)}
                 className={`flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-left text-sm transition ${isSelected ? 'bg-[#505fe7]/25 font-semibold text-white' : 'text-[#dfe6ff] hover:bg-white/8'}`}
               >
-                <span>{day}</span>
+                <span>{formatDay ? new Intl.DateTimeFormat(undefined, { weekday: 'long', month: 'short', day: 'numeric' }).format(new Date(`${day}T12:00:00`)) : day}</span>
               </button>
             )
           })}

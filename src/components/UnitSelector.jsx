@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import unitsIcon from '../assets/images/icon-units.svg'
 
+// Each group maps directly to one property in the shared units state object.
 const unitOptions = [
   { key: 'temperature', label: 'Temperature', options: [{ value: 'celsius', label: 'Celsius (°C)' }, { value: 'fahrenheit', label: 'Fahrenheit (°F)' }] },
   { key: 'windSpeed', label: 'Wind speed', options: [{ value: 'kmh', label: 'km/h' }, { value: 'mph', label: 'mile/h' }] },
@@ -8,17 +9,20 @@ const unitOptions = [
 ]
 
 export default function UnitSelector({ units, onChange }) {
+  // Only this menu's open state is local; unit values belong to App.
   const [isOpen, setIsOpen] = useState(false)
   const selectorRef = useRef(null)
   const isImperial = units.temperature === 'fahrenheit' && units.windSpeed === 'mph' && units.precipitation === 'inches'
 
   const switchUnitSystem = () => {
+    // Toggle all three values together for a conventional metric/imperial shortcut.
     onChange(isImperial
       ? { temperature: 'celsius', windSpeed: 'kmh', precipitation: 'mm' }
       : { temperature: 'fahrenheit', windSpeed: 'mph', precipitation: 'inches' })
   }
 
   useEffect(() => {
+    // Dismiss the popover when users click elsewhere on the page.
     const closeOnOutsideClick = (event) => {
       if (!selectorRef.current?.contains(event.target)) setIsOpen(false)
     }
@@ -43,6 +47,7 @@ export default function UnitSelector({ units, onChange }) {
         </svg>
       </button>
 
+      {/* Render individual controls as radios, plus a shortcut for all-unit switching. */}
       {isOpen && (
         <div role='dialog' aria-label='Unit selection' className='absolute right-0 z-20 mt-2 w-64 rounded-2xl border border-white/10 bg-[#1d2345] p-3 shadow-[0_16px_40px_rgba(9,13,31,0.45)]'>
           {unitOptions.map((group) => (

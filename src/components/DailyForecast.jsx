@@ -2,6 +2,7 @@ import { formatDay, getWeatherDetails } from '../lib/weather'
 import WeatherIcon from './WeatherIcon'
 
 export default function DailyForecast({ weather, isLoading }) {
+  // Daily arrays share matching indexes, so combine each date with its weather values.
   const daily = weather?.daily
   const temperatureUnit = weather?.daily_units?.temperature_2m_max || '°C'
   const forecast = daily?.time?.map((date, index) => ({
@@ -11,6 +12,7 @@ export default function DailyForecast({ weather, isLoading }) {
     ...getWeatherDetails(daily.weather_code[index]),
   })) || []
   return (
+    // Show fixed-size blank cards while data is loading to preserve the dashboard layout.
     <section className='daily-section rounded-[20px]' aria-label='Daily forecast'>
       <div className='daily-heading'>
         <h2 className='brand-heading font-bold text-white'>Daily forecast</h2>
@@ -19,6 +21,7 @@ export default function DailyForecast({ weather, isLoading }) {
       <div className='daily-grid grid'>
         {isLoading ? Array.from({ length: 7 }, (_, index) => (
           <div key={index} aria-hidden='true' className='daily-card w-full rounded-[18px] border border-white/8 bg-[#1b2243] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]' />
+        // Once loaded, render the API-provided forecast for each day.
         )) : forecast.map((item) => (
           <div
             key={item.date}

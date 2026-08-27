@@ -12,6 +12,7 @@ import retryIcon from './assets/images/icon-retry.svg'
 
 
 function App() {
+  // App owns the data shared by search, unit selection, and every forecast widget.
   const [units, setUnits] = useState({ temperature: 'celsius', windSpeed: 'kmh', precipitation: 'mm' })
   const [place, setPlace] = useState(null)
   const [places, setPlaces] = useState([])
@@ -19,11 +20,15 @@ function App() {
   const [status, setStatus] = useState('empty')
   const [requestNonce, setRequestNonce] = useState(0)
   const [isRetrying, setIsRetrying] = useState(false)
+  // Cancels stale autocomplete requests as the user continues typing.
   const searchController = useRef(null)
+  // Records the last failed operation so Retry repeats the right request type.
   const failedRequest = useRef(null)
 
   useEffect(() => {
     if (!place) return undefined
+
+    // A new place, unit selection, or nonce value starts a fresh forecast request.
     const controller = new AbortController()
     getForecast(place, units, controller.signal)
       .then((forecast) => {
@@ -43,17 +48,20 @@ function App() {
   }, [place, units, requestNonce])
 
   const beginLoading = () => {
+    // Clear stale values so each widget renders its loading state immediately.
     setStatus('loading')
     setWeather(null)
     failedRequest.current = null
   }
 
   const handleUnitsChange = (nextUnits) => {
+    // Unit changes trigger a new API request because Open-Meteo converts values server-side.
     if (place) beginLoading()
     setUnits(nextUnits)
   }
 
   const handlePlaceSelect = (nextPlace) => {
+    // Selecting a suggestion makes it the active location for the forecast effect.
     setIsRetrying(false)
     beginLoading()
     setPlace(nextPlace)
@@ -69,6 +77,7 @@ function App() {
     searchController.current = controller
     try {
       const results = await searchPlaces(query, controller.signal)
+      // Ignore a response if a newer query has already replaced this controller.
       if (searchController.current === controller) setPlaces(results)
     } catch (requestError) {
       if (requestError.name !== 'AbortError' && searchController.current === controller) setPlaces([])
@@ -76,6 +85,7 @@ function App() {
   }
 
   const handleSearch = async (query) => {
+    // A direct search uses the first geocoding result as Open-Meteo's best match.
     try {
       const [firstResult] = await searchPlaces(query)
       if (firstResult) handlePlaceSelect(firstResult)
@@ -99,6 +109,7 @@ function App() {
 
     setIsRetrying(true)
     if (retryTarget.type === 'forecast') {
+      // The nonce forces the forecast effect to run again for the same place/units.
       beginLoading()
       setRequestNonce((value) => value + 1)
       return
@@ -110,6 +121,7 @@ function App() {
   return (
     <main className='app-page text-white'>
       <div className='app-shell'>
+        {/* Global navigation controls stay above all forecast states. */}
         <NavBar units={units} onUnitsChange={handleUnitsChange} />
 
         <header className='app-hero mx-auto text-center'>
@@ -122,6 +134,7 @@ function App() {
           <SearchBar places={places} onPlaceSelect={handlePlaceSelect} onSearch={handleSearch} onQueryChange={handleQueryChange} />
         </div>
 
+        {/* Exactly one state is visible: error/retry, forecast dashboard, or no result. */}
         {status === 'error' || isRetrying ? (
           <section className='mt-8 rounded-[20px] border border-white/10 bg-[#1d2345]/80 px-6 py-14 text-center shadow-[0_12px_32px_rgba(9,13,31,0.3)]' role='alert'>
             <img src={errorIcon} alt='' aria-hidden='true' className='mx-auto h-10 w-10' />
@@ -133,6 +146,7 @@ function App() {
             </button>
           </section>
         ) : place ? (
+          // Every forecast component consumes the same API response and loading state.
           <div className='dashboard-grid grid'> {/* dashboard */}
             <div className='content-stack min-w-0 w-full'> {/* left column */}
               <WeatherWidget place={place} weather={weather} isLoading={status === 'loading'} />

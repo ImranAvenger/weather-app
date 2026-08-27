@@ -3,6 +3,7 @@ import UnitSelector from './UnitSelector'
 
 function NavBar({ units, onUnitsChange }) {
   return (
+    // Keep global controls separate from the forecast content below.
     <nav className='flex items-center justify-between gap-4'>
       <div className='flex items-center gap-3'>
         <img src={logo} alt='Weather Now logo' className='' />

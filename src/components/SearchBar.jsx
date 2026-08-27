@@ -2,6 +2,7 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import searchIcon from '../assets/images/icon-search.svg'
 
 function SearchBar({ places = [], onPlaceSelect, onSearch, onQueryChange }) {
+  // Search text, menu visibility, keyboard focus, and async feedback are local to this control.
   const [query, setQuery] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const [activeIndex, setActiveIndex] = useState(-1)
@@ -11,6 +12,8 @@ function SearchBar({ places = [], onPlaceSelect, onSearch, onQueryChange }) {
   const listboxId = useId()
 
   const suggestions = useMemo(() => {
+    // The API returns a small result set; this client filter keeps keyboard and click
+    // suggestions aligned with the exact text currently in the input.
     const normalizedQuery = query.trim().toLocaleLowerCase()
     if (!normalizedQuery) return places.slice(0, 5)
 
@@ -22,6 +25,7 @@ function SearchBar({ places = [], onPlaceSelect, onSearch, onQueryChange }) {
   }, [places, query])
 
   useEffect(() => {
+    // Clicking outside the search control closes its suggestion list.
     const closeOnOutsidePointerDown = (event) => {
       if (!searchRef.current?.contains(event.target)) setIsOpen(false)
     }
@@ -31,6 +35,7 @@ function SearchBar({ places = [], onPlaceSelect, onSearch, onQueryChange }) {
   }, [])
 
   const selectPlace = (place) => {
+    // A clicked or keyboard-selected suggestion becomes the app's active location.
     setQuery(place.name)
     setIsOpen(false)
     setActiveIndex(-1)
@@ -38,6 +43,7 @@ function SearchBar({ places = [], onPlaceSelect, onSearch, onQueryChange }) {
   }
 
   const submitSearch = () => {
+    // Prefer an active suggestion; otherwise ask the parent to find the best match.
     const selectedSuggestion = suggestions[activeIndex]
     if (selectedSuggestion) {
       selectPlace(selectedSuggestion)
@@ -50,6 +56,7 @@ function SearchBar({ places = [], onPlaceSelect, onSearch, onQueryChange }) {
   }
 
   const handleKeyDown = (event) => {
+    // Provide standard combobox navigation without moving focus from the text field.
     if (event.key === 'ArrowDown') {
       event.preventDefault()
       setIsOpen(true)
@@ -67,7 +74,8 @@ function SearchBar({ places = [], onPlaceSelect, onSearch, onQueryChange }) {
   }
 
   return (
-    <div ref={searchRef} className='search-bar relative flex w-full max-w-[680px] items-center gap-3 max-[479px]:flex-col max-[479px]:items-stretch'>
+    // This wrapper contains the visible input, accessible label, and autocomplete list.
+    <div ref={searchRef} className='search-bar relative flex w-full max-w-170 items-center gap-3 max-[479px]:flex-col max-[479px]:items-stretch'>
       <label className='search-field relative block h-14 flex-1 max-[479px]:w-full max-[479px]:flex-none'>
         <span className='sr-only'>Search for a place</span>
         <img
@@ -100,6 +108,7 @@ function SearchBar({ places = [], onPlaceSelect, onSearch, onQueryChange }) {
             }
 
             setIsSearching(true)
+            // A request ID prevents an earlier promise from hiding the loader for a newer query.
             Promise.resolve(onQueryChange?.(nextQuery)).finally(() => {
               if (searchRequestId.current === requestId) setIsSearching(false)
             })
@@ -109,6 +118,7 @@ function SearchBar({ places = [], onPlaceSelect, onSearch, onQueryChange }) {
           className='block h-full w-full rounded-2xl border border-[#2d447b] bg-[#1d2345] pl-12 pr-4 text-base text-white placeholder:text-[#d7d4ef]/70 outline-none transition focus:border-blue-400/80 focus:ring-2 focus:ring-blue-400/40'
         />
 
+        {/* Suggestions, search progress, and no-result feedback share one listbox. */}
         {isOpen && (
           <ul id={listboxId} role='listbox' aria-label='Place suggestions' className='absolute z-30 mt-2 w-full overflow-hidden rounded-2xl border border-white/10 bg-[#1d2345] p-1.5 shadow-[0_16px_40px_rgba(9,13,31,0.45)]'>
             {isSearching ? (

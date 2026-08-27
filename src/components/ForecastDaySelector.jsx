@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 
 export default function ForecastDaySelector({ days, selectedDay, onChange, formatDay = false }) {
+  // This component owns only menu visibility; the parent owns the selected day.
   const [isOpen, setIsOpen] = useState(false)
   const selectorRef = useRef(null)
 
   useEffect(() => {
+    // Close the popover when a pointer interaction happens outside of it.
     const closeOnOutsideClick = (event) => {
       if (!selectorRef.current?.contains(event.target)) setIsOpen(false)
     }
@@ -14,6 +16,7 @@ export default function ForecastDaySelector({ days, selectedDay, onChange, forma
   }, [])
 
   const chooseDay = (day) => {
+    // Inform the forecast component, then close the menu for a normal select interaction.
     onChange(day)
     setIsOpen(false)
   }
@@ -27,12 +30,14 @@ export default function ForecastDaySelector({ days, selectedDay, onChange, forma
         aria-haspopup='listbox'
         className='inline-flex min-w-28 items-center justify-between gap-3 rounded-xl border border-white/10 bg-[#242f53] px-3 py-2 text-sm font-medium text-[#edf1ff] transition hover:bg-[#29355d] focus:outline-none focus:ring-2 focus:ring-blue-400/60'
       >
+        {/* Date-only strings use noon to avoid timezone-boundary formatting issues. */}
         <span>{selectedDay ? (formatDay ? new Intl.DateTimeFormat(undefined, { weekday: 'short' }).format(new Date(`${selectedDay}T12:00:00`)) : selectedDay) : '—'}</span>
         <svg className={`h-3.5 w-3.5 transition-transform ${isOpen ? 'rotate-180' : ''}`} viewBox='0 0 20 20' fill='none' stroke='currentColor' strokeWidth='1.8' aria-hidden='true'>
           <path d='M5 7.5L10 12.5L15 7.5' strokeLinecap='round' strokeLinejoin='round' />
         </svg>
       </button>
 
+      {/* The listbox is mounted only while the selector is open. */}
       {isOpen && (
         <div role='listbox' aria-label='Forecast day' className='absolute right-0 z-10 mt-2 w-40 overflow-hidden rounded-xl border border-white/10 bg-[#202b4e] p-1.5 shadow-[0_14px_32px_rgba(5,9,28,0.45)]'>
           {days.map((day) => {

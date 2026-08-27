@@ -128,7 +128,7 @@ function App() {
             <h2 className='brand-heading mt-5 text-2xl font-bold text-white'>{isRetrying ? 'Retrying…' : 'Something went wrong.'}</h2>
             <p className='mx-auto mt-2 max-w-md text-sm leading-6 text-[#cbd1ea]'>{isRetrying ? 'Trying to reconnect to the weather service.' : 'We couldn\'t connect to the server (API error). Please try again in a few moments.'}</p>
             <button type='button' onClick={retryRequest} disabled={isRetrying} aria-busy={isRetrying} className='mx-auto mt-6 inline-flex items-center gap-2 rounded-xl bg-[#505fe7] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4757d9] focus:outline-none focus:ring-2 focus:ring-blue-300/70 focus:ring-offset-2 focus:ring-offset-[#1d2345] disabled:cursor-wait disabled:opacity-70'>
-              <img src={retryIcon} alt='' aria-hidden='true' className={`h-[18px] w-[18px] brightness-0 invert ${isRetrying ? 'animate-spin' : ''}`} />
+              <img src={retryIcon} alt='' aria-hidden='true' className={`h-4.5 w-4.5 brightness-0 invert ${isRetrying ? 'animate-spin' : ''}`} />
               {isRetrying ? 'Retrying…' : 'Retry'}
             </button>
           </section>

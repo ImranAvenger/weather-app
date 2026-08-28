@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 
 import NavBar from './components/NavBar'
 import SearchBar from './components/SearchBar'
@@ -47,27 +47,27 @@ function App() {
     return () => controller.abort()
   }, [place, units, requestNonce])
 
-  const beginLoading = () => {
+  const beginLoading = useCallback(() => {
     // Clear stale values so each widget renders its loading state immediately.
     setStatus('loading')
     setWeather(null)
     failedRequest.current = null
-  }
+  }, [])
 
-  const handleUnitsChange = (nextUnits) => {
+  const handleUnitsChange = useCallback((nextUnits) => {
     // Unit changes trigger a new API request because Open-Meteo converts values server-side.
     if (place) beginLoading()
     setUnits(nextUnits)
-  }
+  }, [place, beginLoading])
 
-  const handlePlaceSelect = (nextPlace) => {
+  const handlePlaceSelect = useCallback((nextPlace) => {
     // Selecting a suggestion makes it the active location for the forecast effect.
     setIsRetrying(false)
     beginLoading()
     setPlace(nextPlace)
-  }
+  }, [beginLoading])
 
-  const handleQueryChange = async (query) => {
+  const handleQueryChange = useCallback(async (query) => {
     searchController.current?.abort()
     if (query.trim().length < 2) {
       setPlaces([])
@@ -82,9 +82,9 @@ function App() {
     } catch (requestError) {
       if (requestError.name !== 'AbortError' && searchController.current === controller) setPlaces([])
     }
-  }
+  }, [])
 
-  const handleSearch = async (query) => {
+  const handleSearch = useCallback(async (query) => {
     // A direct search uses the first geocoding result as Open-Meteo's best match.
     try {
       const [firstResult] = await searchPlaces(query)
@@ -101,9 +101,9 @@ function App() {
       setIsRetrying(false)
       failedRequest.current = { type: 'search', query }
     }
-  }
+  }, [handlePlaceSelect])
 
-  const retryRequest = async () => {
+  const retryRequest = useCallback(async () => {
     const retryTarget = failedRequest.current
     if (!retryTarget) return
 
@@ -116,7 +116,8 @@ function App() {
     }
 
     await handleSearch(retryTarget.query)
-  }
+  }, [beginLoading, handleSearch])
+
 
   return (
     <main className='app-page text-white'>
